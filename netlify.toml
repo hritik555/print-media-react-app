@@ -1,0 +1,49 @@
+[build]
+  command = "vite build"
+  publish = "dist/client"
+[dev]
+  command = "npm run dev"
+  targetPort = 3000
+  port = 8888
+
+# Role-based access: Admin routes
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/:splat"
+  status = 200
+  conditions = { Role = ["admin"] }
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/"
+  status = 302
+
+# Role-based access: Staff routes
+[[redirects]]
+  from = "/staff/*"
+  to = "/staff/:splat"
+  status = 200
+  conditions = { Role = ["staff", "admin"] }
+
+[[redirects]]
+  from = "/staff/*"
+  to = "/"
+  status = 302
+
+# Role-based access: Partner routes
+[[redirects]]
+  from = "/partner/*"
+  to = "/partner/:splat"
+  status = 200
+  conditions = { Role = ["partner", "admin"] }
+
+[[redirects]]
+  from = "/partner/*"
+  to = "/"
+  status = 302
+
+# Exclude Netlify Identity endpoints from edge functions
+[[edge_functions]]
+  path = "/*"
+  function = "server"
+  excludedPath = "/.netlify/*"
