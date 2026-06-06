@@ -21,10 +21,12 @@ jobs:
           node-version: 22 # FIX 1: Updated to Node 22 to satisfy @netlify/vite-plugin-tanstack-start
           cache: 'npm'
 
-      # Step 3: Install dependencies
+    # Step 3: Install dependencies (Bypassing Mac lockfile issues)
       - name: Install Dependencies
-        run: npm install # FIX 2: Changed from 'npm ci' to resolve cross-platform binary issues
-
+        run: |
+          rm -f package-lock.json
+          npm install
+          
       # Step 4: Build the production application
       - name: Build Application
         run: npm run build
