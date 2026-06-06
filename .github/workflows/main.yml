@@ -18,24 +18,24 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm' # Optimizes build time by caching npm dependencies
+          node-version: 22 # FIX 1: Updated to Node 22 to satisfy @netlify/vite-plugin-tanstack-start
+          cache: 'npm'
 
-      # Step 3: Install dependencies using clean install
+      # Step 3: Install dependencies
       - name: Install Dependencies
-        run: npm ci
+        run: npm install # FIX 2: Changed from 'npm ci' to resolve cross-platform binary issues
 
       # Step 4: Build the production application
       - name: Build Application
         run: npm run build
         env:
-          CI: false # Prevents warnings from being treated as errors during the build
+          CI: false
 
       # Step 5: Deploy the build directory to Netlify
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v3
         with:
-          publish-dir: './dist' # Use './dist' if your project is built with Vite
+          publish-dir: './dist' # Updated to 'dist' as Vite is being used
           production-deploy: true
           netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           site-id: ${{ secrets.NETLIFY_SITE_ID }}
