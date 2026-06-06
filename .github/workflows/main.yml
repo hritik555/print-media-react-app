@@ -1,0 +1,41 @@
+name: Deploy React App to Netlify
+
+on:
+  push:
+    branches:
+      - main # Change this to 'master' if your default branch uses that name
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm' # Optimizes build time by caching npm dependencies
+
+      # Step 3: Install dependencies using clean install
+      - name: Install Dependencies
+        run: npm ci
+
+      # Step 4: Build the production application
+      - name: Build Application
+        run: npm run build
+        env:
+          CI: false # Prevents warnings from being treated as errors during the build
+
+      # Step 5: Deploy the build directory to Netlify
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v3
+        with:
+          publish-dir: './dist' # Use './dist' if your project is built with Vite
+          production-deploy: true
+          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          site-id: ${{ secrets.NETLIFY_SITE_ID }}
