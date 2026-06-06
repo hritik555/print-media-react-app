@@ -14,19 +14,17 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js environment
+    # Step 2: Set up Node.js environment
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22 # FIX 1: Updated to Node 22 to satisfy @netlify/vite-plugin-tanstack-start
-          cache: 'npm'
+          node-version: 22 
+          cache: 'npm' # Turn caching back on for speed
 
-    # Step 3: Install dependencies (Bypassing Mac lockfile issues)
+      # Step 3: Install dependencies 
       - name: Install Dependencies
-        run: |
-          rm -f package-lock.json
-          npm install
-          
+        run: npm ci # Switch back to 'npm ci' for strict lockfile installation
+        
       # Step 4: Build the production application
       - name: Build Application
         run: npm run build
